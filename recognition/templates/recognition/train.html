@@ -1,0 +1,64 @@
+{% extends "recognition/main.html" %}
+
+{% block init %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/json2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/raphael-2.0.1.js' %}"></script>
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/raphael.sketchpad.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+
+<h1>Classifier: <span class="classifier_name">{{classifier}}</span></h1>
+
+<script type="text/javascript">
+    function loadData() {
+        document.getElementById("picture").value = document.getElementById("editor").firstElementChild.outerHTML;
+    }
+</script>
+
+<!-- For for adding training examples-->
+<form action="" method="post" enctype="multipart/form-data" onsubmit="return loadData();">{% csrf_token %}
+    <!-- Current picture-->
+	<input id="picture" type="hidden" name="data" />
+    
+    <table>
+    <tr>
+        <td>
+        <div id="editor" class="horiz_align"></div>
+        </td>
+        <td>
+        {% for klass in classifier.classes %}
+            <input class="horiz_align" type="radio" name="class_number" value={{forloop.counter0}}>{{klass}}<br>
+        {% endfor %}
+        </td>
+    </tr>
+    </table>
+    <p>
+        <input class='btn' type="submit" value="Add training example" />
+    </p>
+</form>
+
+
+<!-- Button for training the classifier -->
+<form action="/train/{{classifier}}" method="post">{% csrf_token %}
+	<input class='btn' type="submit" value="Train" />
+</form>
+
+<!-- Back -->
+<form action="/classifier/{{classifier}}" method="get">{% csrf_token %}
+	<input class='btn btn_back' type="submit" value="Back" />
+</form>
+
+<!-- Drawing the picture -->
+<script type="text/javascript">
+	var sketchpad = Raphael.sketchpad("editor", {
+		width: {{X}},
+		height: {{X}},
+		editing: true
+	});
+</script>
+
+
+{% endblock %}

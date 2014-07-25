@@ -1,0 +1,26 @@
+{% extends "recognition/main.html" %}
+
+{% block init %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/json2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/raphael-2.0.1.js' %}"></script>
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/raphael.sketchpad.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+
+<h1 id="list_header">Classifiers</h1>
+<ul id="classifier_list">
+{% for classifier in object_list %}
+    <li><a href="/classifier/{{classifier}}">{{ classifier }}</a></li>
+{% empty %}
+    <li>No classifiers yet. You need to create a new one.</li>
+{% endfor %}
+</ul>
+   
+<form action="recognition/new_classifier" method="get">{% csrf_token %}
+	<input class='btn' type="submit" value="New" />
+</form>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "recognition/main.html" %}
+
+{% block init %}
+    {% load staticfiles %}
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/json2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/raphael-2.0.1.js' %}"></script>
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/raphael.sketchpad.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+
+<h1>Classifier: <span class="classifier_name">{{classifier}}</span></h1>
+
+<div id="editor"></div>
+
+<button id="classify_btn" class="btn" onclick="classify();">Classify</button>
+
+<label id="classification_result" visible=true></label>
+
+<!-- Back -->
+<form action="/classifier/{{classifier}}" method="get">{% csrf_token %}
+	<input class="btn btn_back" type="submit" value="Back" />
+</form>
+
+<script type="text/javascript">
+	var sketchpad = Raphael.sketchpad("editor", {
+		width: {{X}},
+		height: {{Y}},
+		editing: true
+	});
+    
+    function classify() {
+        $.ajax({
+            url: "",
+            type: "POST",
+            data:  {
+                "data": document.getElementById("editor").firstElementChild.outerHTML,
+            },
+            success: function(data){
+                resultField = $("#classification_result")[0];
+                console.log(data);
+                resultField.style.display = 'block';
+                resultField.innerHTML = "It looks like " + data;
+            }
+        });
+    }
+</script>
+
+
+{% endblock %}

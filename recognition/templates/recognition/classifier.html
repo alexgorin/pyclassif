@@ -1,0 +1,53 @@
+{% extends "recognition/main.html" %}
+
+{% block init %}
+{% endblock %}
+
+{% block body %}
+
+
+<h1>Classifier: <span class="classifier_name">{{classifier}}</span></h1>
+<ul>
+{% for klass in classifier.classes %}
+    <li>{{ klass}}
+{% endfor %}
+</ul>
+
+{% if classifier.X %}
+<p> This classifier already has {{ classifier.X | length }} training example{{ classifier.X | length | pluralize }} to learn from.
+{% else %}
+<p> This classifier has no training examples to learn from yet.
+{% endif %}
+
+{% if classifier.last_training_set_length %}
+    {% if classifier.is_trained_recently %}
+        <p> This classifier has been trained recently. No additional training is required.
+    {% else %}
+        {% with new_elems=classifier.additions_since_last_training %}
+        <p> Since the last training {{new_elems}} new training example{{new_elems | pluralize}} was added.
+        {% endwith %}
+    {% endif %}
+{% else %}
+<p> This classifier has not been trained yet.
+{% endif %}
+
+<div class="lower_btns">
+
+<!-- Button to train the classifier -->
+<form action="/recognition/add_example/{{classifier}}" method="get">{% csrf_token %}
+	<input class='btn' type="submit" value="Train" />
+</form>
+
+<!-- Button to use the classifier -->
+<form action="/recognition/classify/{{classifier}}" method="get">{% csrf_token %}
+	<input class='btn' type="submit" value="Classify" />
+</form>
+
+<!-- Button to remove the classifier -->
+<form action="/remove_classifier/{{classifier}}" method="post" onclick="return confirm('Are you sure that you want to remove classifier {{classifier}}?')">{% csrf_token %}
+	<input class='btn' type="submit" value="Remove classifier" />
+</form>
+
+</div>
+
+{% endblock %}

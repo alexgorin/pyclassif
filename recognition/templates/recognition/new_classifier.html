@@ -1,0 +1,48 @@
+{% extends "recognition/main.html" %}
+
+{% block init %}
+{% load staticfiles %}
+    <script type="text/javascript" src="{% static 'recognition/js/drawing/jquery-2.1.1.min.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+        var MaxInputs       = 20;
+        var InputsWrapper   = $("#Form");
+        var AddButton       = $("#AddMoreFileBox");
+
+        var x = InputsWrapper.length;
+        var FieldCount = 1;
+
+        $(AddButton).click(function (e) //add field for a new class
+        {
+                if(x <= MaxInputs)
+                {
+                    FieldCount++;
+                    $(InputsWrapper).append('<div><input type="text" name="class_'+ FieldCount + ' id="class_'+ FieldCount +'" value="Class '+ FieldCount +'"/><a href="#" class="removeclass">&times;</a></div>');
+                    x++;
+                }
+        return false;
+        });
+    
+        $("body").on("click",".removeclass", function(e){ //remove field for a new class
+                if( x > 1 ) {
+                        $(this).parent('div').remove();
+                        x--;
+                }
+        return false;
+        }) 
+
+        });
+    </script>
+
+{% endblock %}
+
+{% block body %}
+
+<form action="new_classifier" method="post" id="Form">{% csrf_token %}
+	Name: <input type="text" name="name"><input type="submit" value="Save" class='btn'/></br><br>
+    <input type="submit" class="btn" id="AddMoreFileBox" value="Add new class">
+	
+</form>
+
+{% endblock %}

@@ -1,0 +1,7 @@
+import logging
+
+UI_PICTURE_SIZE = (400, 400)
+
+COMPRESS_IMAGE_TO = (28, 28)
+
+DEBUG_LEVEL = logging.DEBUG
